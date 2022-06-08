@@ -63,7 +63,7 @@
           [org.clojure/core.async "1.5.648"]]
     (lwjgl-deps-with-natives)))
 
-(defproject cljgl "0.1.0-SNAPSHOT"
+(defproject org.clojars.jansuran03/cljgl "0.0.0"
   :dependencies ~all-dependencies
   :java-source-paths ["src/java"]
   :jvm-opts ^:replace ~(jvm-opts)

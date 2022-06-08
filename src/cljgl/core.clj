@@ -1,6 +1,6 @@
 (ns cljgl.core)
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defonce version "0.1.0")
+
+(defn -main [& args]
+  (println (str "Hello, cljgl " version "!")))
