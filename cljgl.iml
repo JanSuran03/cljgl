@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/dev-resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
@@ -20,7 +21,120 @@
     <orderEntry type="library" name="Leiningen: clojure-complete:0.2.5" level="project" />
     <orderEntry type="library" name="Leiningen: nrepl:0.6.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.10.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/core.async:1.5.648" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/core.cache:1.0.225" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/core.memoize:1.0.253" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.specs.alpha:0.2.44" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/data.priority-map:1.1.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/spec.alpha:0.2.176" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.analyzer.jvm:1.2.2" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.analyzer:1.1.0" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.reader:1.3.6" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-assimp:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-assimp:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-assimp:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-assimp:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-bgfx:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-bgfx:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-bgfx:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-bgfx:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-egl:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-glfw:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-glfw:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-glfw:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-glfw:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-jawt:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-jemalloc:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-jemalloc:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-jemalloc:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-jemalloc:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lmdb:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lmdb:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lmdb:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lmdb:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lz4:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lz4:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lz4:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-lz4:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nanovg:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nanovg:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nanovg:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nanovg:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nfd:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nfd:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nfd:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nfd:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nuklear:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nuklear:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nuklear:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-nuklear:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-odbc:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openal:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openal:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openal:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openal:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opencl:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengl:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengl:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengl:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengl:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengles:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengles:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengles:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-opengles:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openvr:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openvr:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openvr:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-openvr:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-par:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-par:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-par:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-par:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-remotery:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-remotery:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-remotery:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-remotery:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-rpmalloc:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-rpmalloc:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-rpmalloc:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-rpmalloc:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-sse:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-sse:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-sse:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-sse:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-stb:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-stb:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-stb:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-stb:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyexr:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyexr:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyexr:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyexr:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyfd:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyfd:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyfd:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tinyfd:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tootle:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tootle:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tootle:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-tootle:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-vulkan:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-xxhash:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-xxhash:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-xxhash:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-xxhash:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-yoga:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-yoga:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-yoga:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-yoga:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-zstd:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-zstd:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-zstd:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl-zstd:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.3.1" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.3.1:natives-linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.3.1:natives-macos" level="project" />
+    <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.3.1:natives-windows" level="project" />
+    <orderEntry type="library" name="Leiningen: org.ow2.asm/asm:9.2" level="project" />
   </component>
 </module>
