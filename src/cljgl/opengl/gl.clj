@@ -16,7 +16,7 @@
 ;; GL DATA TYPES
 ;; ------------------------------------------------------
 (defonce ^Integer INT GL33/GL_INT)
-(defonce ^Integer UNSIGNED-INT GL33/GL_UNSIGNED_INT)
+(defonce ^Integer U-INT GL33/GL_UNSIGNED_INT)
 (defonce ^Integer BYTE GL33/GL_BYTE)
 (defonce ^Integer U-BYTE GL33/GL_UNSIGNED_BYTE)
 (defonce ^Integer SHORT GL33/GL_SHORT)

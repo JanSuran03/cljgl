@@ -1,5 +1,5 @@
 (ns cljgl.opengl.shaders
-  (:require [cljgl.common.util :as util]
+  (:require [cljgl.common.gl-util :as gl-util]
             [clojure.java.io :as io]
             [cljgl.common.destructor :as destructor]
             [clojure.string :as str])
@@ -45,7 +45,7 @@
     (GL33/glGetShaderiv shader parameter-name result-buffer)
     (aget result-buffer 0)))
 
-(defn- shader-compiled? [shader] (util/ok? (get-shader-status shader GL33/GL_COMPILE_STATUS)))
+(defn- shader-compiled? [shader] (gl-util/ok? (get-shader-status shader GL33/GL_COMPILE_STATUS)))
 
 (defn- create-and-compile-shader [shader-type shader-source]
   (doto (create-shader shader-type)
@@ -60,7 +60,7 @@
     (if (shader-compiled? compiled-shader)
       compiled-shader
       (do (delete-shader compiled-shader)
-          (util/log (str "Vertex shader compilation failed! Source path: " debug-src-path))
+          (gl-util/log (str "Vertex shader compilation failed! Source path: " debug-src-path))
           (throw (RuntimeException. (get-shader-info-log compiled-shader)))))))
 
 (defn- create-and-compile-fragment-shader [fragment-source debug-src-path]
@@ -68,7 +68,7 @@
     (if (shader-compiled? compiled-shader)
       compiled-shader
       (do (delete-shader compiled-shader)
-          (util/log (str "Fragment shader compilation failed! Source path: " debug-src-path))
+          (gl-util/log (str "Fragment shader compilation failed! Source path: " debug-src-path))
           (throw (RuntimeException. (get-shader-info-log compiled-shader)))))))
 ;; ------------------------------------------------------
 ;; shader program
@@ -81,12 +81,12 @@
 (defn- get-shader-program-info-log [shader-program] (GL33/glGetProgramInfoLog shader-program))
 
 (defn- assert-shader-program-linked [shader-program]
-  (when-not (util/ok? (get-shader-program-status shader-program GL33/GL_LINK_STATUS))
+  (when-not (gl-util/ok? (get-shader-program-status shader-program GL33/GL_LINK_STATUS))
     (throw (RuntimeException. (str "Shader program linking failed: "
                                    (get-shader-program-info-log shader-program))))))
-(defn- validate-shader-program [shader-program] (util/ok? (GL33/glValidateProgram shader-program)))
+(defn- validate-shader-program [shader-program] (gl-util/ok? (GL33/glValidateProgram shader-program)))
 (defn assert-shader-program-validated [shader-program]
-  (when-not (util/ok? (get-shader-program-status shader-program GL33/GL_VALIDATE_STATUS))
+  (when-not (gl-util/ok? (get-shader-program-status shader-program GL33/GL_VALIDATE_STATUS))
     (throw (RuntimeException. (str "Shader program validation failed: "
                                    (get-shader-program-info-log shader-program))))))
 
@@ -160,3 +160,22 @@
   (destructor/destroy [this]
     (println "Destroying shader program" shader-program-id)
     (delete-shader-program shader-program-id)))
+
+(defn make-shader-program [shader-program-lookup-name src-path]
+  (let [{:keys [vertex-source fragment-source]} (read-shaders src-path)
+        vertex-shader (create-and-compile-vertex-shader vertex-source src-path)
+        fragment-shader (create-and-compile-fragment-shader fragment-source src-path)
+        shader-program (doto (create-shader-program)
+                         (attach-shader-to-shader-program vertex-shader)
+                         (attach-shader-to-shader-program fragment-shader)
+                         link-shader-program
+                         assert-shader-program-linked
+                         validate-shader-program
+                         assert-shader-program-validated)
+        _ (do (delete-shader vertex-shader)
+              (delete-shader fragment-shader)
+              (detach-shader-from-shader-program shader-program vertex-shader)
+              (detach-shader-from-shader-program shader-program fragment-shader))
+        shader-program-obj (ShaderProgram. shader-program {})]
+    (swap! shader-programs assoc shader-program-lookup-name shader-program-obj)
+    shader-program-obj))

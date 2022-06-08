@@ -1,5 +1,5 @@
 (ns cljgl.glfw.glfw
-  (:require [cljgl.common.util :refer [null]])
+  (:require [cljgl.common.gl-util :refer [null]])
   (:import (org.lwjgl.glfw Callbacks GLFW GLFWErrorCallback GLFWFramebufferSizeCallback
                            GLFWKeyCallback GLFWVidMode)
            (org.lwjgl.system MemoryStack)
