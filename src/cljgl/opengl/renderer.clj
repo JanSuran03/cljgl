@@ -45,16 +45,14 @@
 
 (defn setup-renderer
   "(renderer/setup-rendering
-       {:vertex-source-path   \"vert-triangle.glsl\"
-        :fragment-source-path \"frag-triangle.glsl\"
-        :vertex-positions (list -0.5 -0.5, 0.5 -0.5, +0.5 +0.5, -0.5 0.5)
-        :attributes-setups [{:components 2           ;; layout (location = 0) in vec2;
-                             :data-type  gl/FLOAT
-                             :normalize? false}
-                            {:components 1           ;; layout (location = 1) in float;
-                             :data-type  gl/FLOAT
-                             :normalize? false])
-  => ^Integer shader-program"
+   {:shaders-source-path   \"resources/shaders/triangle.glsl\"
+   :vertex-positions     (list -0.5 -0.5, 0.5 -0.5, +0.5 +0.5, -0.5 0.5)
+   :attributes-setups    [{:components 2           ;; layout (location = 0) in vec2;
+                           :data-type  gl/FLOAT
+                           :normalize? false}
+                          {:components 1           ;; layout (location = 1) in float;
+                           :data-type  gl/FLOAT
+                           :normalize? false}]})"
   [{:keys [shaders-source-path vertex-positions vertex-positions-indices
            attributes-setups shader-program-lookup-name renderer-id] :or {renderer-id (name (gensym "renderer_"))}}]
   (let [shader-program (shaders/make-shader-program shader-program-lookup-name shaders-source-path)

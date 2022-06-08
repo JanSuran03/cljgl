@@ -51,8 +51,8 @@
    ^Integer vertex-size
    ^Long byte-offset])
 
-(defn disable-vertex-attrib-array [index] (GL33/glEnableVertexAttribArray index))
-(defn enable-vertex-attrib-array [index] (GL33/glDisableVertexAttribArray index))
+(defn enable-vertex-attrib-array [index] (GL33/glEnableVertexAttribArray index))
+(defn disable-vertex-attrib-array [index] (GL33/glDisableVertexAttribArray index))
 ;; ------------------------------------------------------
 ;; view stuff
 ;; ------------------------------------------------------
