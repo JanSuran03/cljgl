@@ -1,11 +1,11 @@
 (ns cljgl.opengl.shaders
   (:require [cljgl.common.gl-util :as gl-util]
             [clojure.java.io :as io]
-            [cljgl.common.destructor :as destructor]
+            [cljgl.common.disposer :as disposer]
             [clojure.string :as str])
   (:import (org.lwjgl.opengl GL33)
            (java.io FileNotFoundException)
-           (cljgl.common.destructor IDestructor)
+           (cljgl.common.disposer IDisposable)
            (clojure.lang PersistentHashMap)))
 
 (def current-shader-program (atom -1))
@@ -110,7 +110,7 @@
 
 (defn delete-shader-programs []
   (doseq [[_ shader-program] @shader-programs]
-    (destructor/destroy shader-program))
+    (disposer/dispose shader-program))
   (reset! shader-programs {}))
 
 (deftype ShaderProgram [^Integer shader-program-id ^:unsynchronized-mutable ^PersistentHashMap uniforms]
@@ -156,12 +156,12 @@
         (throw (RuntimeException. (str "Can't set 4f uniform <" uniform-name "> for shader program ("
                                        shader-program "): Uniform not found."))))))
   (use-shader-program [_this] (use-shader-program-impl shader-program-id))
-  IDestructor
-  (destructor/destroy [this]
+  IDisposable
+  (disposer/dispose [this]
     (println "Destroying shader program" shader-program-id)
     (delete-shader-program shader-program-id)))
 
-(defn make-shader-program [shader-program-lookup-name src-path]
+(defn make-shader-program [shader-program-id src-path]
   (let [{:keys [vertex-source fragment-source]} (read-shaders src-path)
         vertex-shader (create-and-compile-vertex-shader vertex-source src-path)
         fragment-shader (create-and-compile-fragment-shader fragment-source src-path)
@@ -177,5 +177,5 @@
               (detach-shader-from-shader-program shader-program vertex-shader)
               (detach-shader-from-shader-program shader-program fragment-shader))
         shader-program-obj (ShaderProgram. shader-program {})]
-    (swap! shader-programs assoc shader-program-lookup-name shader-program-obj)
+    (swap! shader-programs assoc shader-program-id shader-program-obj)
     shader-program-obj))

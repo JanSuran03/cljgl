@@ -1,27 +1,31 @@
 (ns cljgl.opengl.renderer
   (:require [cljgl.common.debug :as debug]
-            [cljgl.common.destructor :as destructor]
+            [cljgl.common.disposer :as disposer]
             [cljgl.common.gl-util :as gl-util]
             [cljgl.opengl.buffers :as buffers]
             [cljgl.opengl.gl :as gl]
             [cljgl.opengl.shaders :as shaders])
-  (:import (cljgl.common.destructor IDestructor)
+  (:import (cljgl.common.disposer IDisposable)
            (cljgl.opengl.shaders ShaderProgram)
            (org.lwjgl.opengl GL33)))
 
 (defprotocol IRenderer
   (render [this] "Performs an OpenGL rendering."))
 
-(defn draw-elements [mode count] (GL33/glDrawElements mode count gl/U-INT 0))
+(defn draw-elements
+  ([mode count] (draw-elements mode count gl/U-INT 0))
+  ([mode count gl-type offset] (GL33/glDrawElements mode count gl-type offset)))
 
 (def rendering-order (atom nil))
+(defn change-rendering-order [new-rendering-order] (reset! rendering-order new-rendering-order))
+
 (defonce ^:private renderers-by-id (atom {}))
 (defn remove-renderer [renderer-id] (swap! renderers-by-id dissoc renderer-id))
 (defn get-renderer [renderer-id] (@renderers-by-id renderer-id))
 
 (defn reset []
   (doseq [[_ renderer] @renderers-by-id]
-    (destructor/destroy renderer))
+    (disposer/dispose renderer))
   (reset! renderers-by-id {}))
 
 (deftype Renderer [renderer-id ^ShaderProgram shader-program vao ebo ebo-size]
@@ -31,9 +35,9 @@
     (buffers/bind-VAO vao)
     (buffers/bind-EBO ebo)
     (draw-elements gl/triangles ebo-size))
-  IDestructor
-  (gl-util/destroy [this]
-    (destructor/destroy shader-program)
+  IDisposable
+  (disposer/dispose [this]
+    (disposer/dispose shader-program)
     ;(util/destroy vao)
     ;(util/destroy ebo)
     (remove-renderer renderer-id)))

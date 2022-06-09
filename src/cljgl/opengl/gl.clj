@@ -49,7 +49,8 @@
    ^Integer data-type
    ^Boolean normalize?
    ^Integer vertex-size
-   ^Long byte-offset])
+   ^Long byte-offset]
+  (GL33/glVertexAttribPointer attribute-location count data-type normalize? vertex-size byte-offset))
 
 (defn enable-vertex-attrib-array [index] (GL33/glEnableVertexAttribArray index))
 (defn disable-vertex-attrib-array [index] (GL33/glDisableVertexAttribArray index))
