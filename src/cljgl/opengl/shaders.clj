@@ -1,12 +1,12 @@
 (ns cljgl.opengl.shaders
   (:require [cljgl.common.gl-util :as gl-util]
-            [clojure.java.io :as io]
             [cljgl.common.disposer :as disposer]
+            [clojure.java.io :as io]
             [clojure.string :as str])
-  (:import (org.lwjgl.opengl GL33)
+  (:import (cljgl.common.disposer IDisposable)
+           (clojure.lang PersistentHashMap)
            (java.io FileNotFoundException)
-           (cljgl.common.disposer IDisposable)
-           (clojure.lang PersistentHashMap)))
+           (org.lwjgl.opengl GL33)))
 
 (def current-shader-program (atom -1))
 
@@ -158,7 +158,6 @@
   (use-shader-program [_this] (use-shader-program-impl shader-program-id))
   IDisposable
   (disposer/dispose [this]
-    (println "Destroying shader program" shader-program-id)
     (delete-shader-program shader-program-id)))
 
 (defn make-shader-program [shader-program-id src-path]

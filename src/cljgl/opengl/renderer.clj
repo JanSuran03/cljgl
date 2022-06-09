@@ -6,6 +6,7 @@
             [cljgl.opengl.gl :as gl]
             [cljgl.opengl.shaders :as shaders])
   (:import (cljgl.common.disposer IDisposable)
+           (cljgl.opengl.buffers Vbo Vao Ebo)
            (cljgl.opengl.shaders ShaderProgram)
            (org.lwjgl.opengl GL33)))
 
@@ -28,18 +29,23 @@
     (disposer/dispose renderer))
   (reset! renderers-by-id {}))
 
-(deftype Renderer [renderer-id ^ShaderProgram shader-program vao ebo ebo-size]
+(deftype Renderer [renderer-id
+                   ^ShaderProgram shader-program
+                   ^Vbo vbo
+                   ^Vao vao
+                   ^Ebo ebo ebo-size]
   IRenderer
   (render [this]
     (shaders/use-shader-program shader-program)
-    (buffers/bind-VAO vao)
-    (buffers/bind-EBO ebo)
+    (buffers/bind vao)
+    (buffers/bind ebo)
     (draw-elements gl/triangles ebo-size))
   IDisposable
   (disposer/dispose [this]
     (disposer/dispose shader-program)
-    ;(util/destroy vao)
-    ;(util/destroy ebo)
+    (disposer/dispose vbo)
+    (disposer/dispose vao)
+    (disposer/dispose ebo)
     (remove-renderer renderer-id)))
 
 (defn render-all []
@@ -60,18 +66,18 @@
   [{:keys [shaders-source-path vertex-positions vertex-positions-indices
            attributes-setups shader-program-lookup-name renderer-id] :or {renderer-id (name (gensym "renderer_"))}}]
   (let [shader-program (shaders/make-shader-program shader-program-lookup-name shaders-source-path)
-        VAO (buffers/gen-vao)
-        VBO (buffers/gen-buffer)
-        EBO (buffers/gen-buffer)
+        VAO (doto (buffers/gen-vao) buffers/bind)
+        VBO (doto (buffers/gen-vbo) buffers/bind)
+        EBO (doto (buffers/gen-ebo) buffers/bind)
         vertex-buffer-stride (reduce (fn [offset {:keys [components gl-type]}]
                                        (+ offset (* components (gl-util/sizeof gl-type))))
                                      0
                                      attributes-setups)
-        _ (debug/assert-all (buffers/bind-VAO VAO)
-                            (buffers/bind-VBO VBO)
-                            (buffers/bind-EBO EBO)
-                            (buffers/VBO-data (float-array vertex-positions) :static-draw)
-                            (buffers/EBO-data (int-array vertex-positions-indices))
+        _ (debug/assert-all (buffers/bind VAO)
+                            (buffers/bind VBO)
+                            (buffers/bind EBO)
+                            (buffers/vbo-data (float-array vertex-positions))
+                            (buffers/ebo-data (int-array vertex-positions-indices))
                             (reduce (fn [[i byte-offset] {:keys [components gl-type normalize?]}]
                                       (gl/setup-vertex-attribute i components (gl-util/gl-type gl-type)
                                                                  normalize? vertex-buffer-stride byte-offset)
@@ -80,6 +86,6 @@
                                       [(inc i) (+ byte-offset (* components (gl-util/sizeof gl-type)))])
                                     [0 0]
                                     attributes-setups))
-        renderer (Renderer. renderer-id shader-program VAO EBO (count vertex-positions-indices))]
+        renderer (Renderer. renderer-id shader-program VBO VAO EBO (count vertex-positions-indices))]
     (swap! renderers-by-id assoc renderer-id renderer)
     renderer))
