@@ -64,13 +64,12 @@
                            :data-type  gl/FLOAT
                            :normalize? false}]})"
   [{:keys [shaders-source-path
-           #_?arrayFloat vertex-positions
-           #_?arrayInt vertex-positions-indices
+           #_floats vertex-positions
+           #_ints vertex-positions-indices
            attributes-setups
            shader-program-lookup-name
            renderer-id] :or {renderer-id (name (gensym "renderer_"))}}]
   (let [shader-program (shaders/make-shader-program shader-program-lookup-name shaders-source-path)
-        _ (println (meta vertex-positions) (meta vertex-positions-indices))
         VAO (doto (buffers/gen-vao) buffers/bind)
         VBO (doto (buffers/gen-vbo) buffers/bind)
         EBO (doto (buffers/gen-ebo) buffers/bind)
@@ -78,10 +77,7 @@
                                        (+ offset (* components (gl-util/sizeof gl-type))))
                                      0
                                      attributes-setups)
-        _ (debug/assert-all (buffers/bind VAO)
-                            (buffers/bind VBO)
-                            (buffers/bind EBO)
-                            (buffers/vbo-data (:data vertex-positions) (gl-util/gl-usage (:usage vertex-positions)))
+        _ (debug/assert-all (buffers/vbo-data (:data vertex-positions) (gl-util/gl-usage (:usage vertex-positions)))
                             (buffers/ebo-data (:data vertex-positions-indices) (gl-util/gl-usage (:usage vertex-positions-indices)))
                             (reduce (fn [[i byte-offset] {:keys [components gl-type normalize?]}]
                                       (gl/setup-vertex-attribute i components (gl-util/gl-type gl-type)
@@ -91,6 +87,6 @@
                                       [(inc i) (+ byte-offset (* components (gl-util/sizeof gl-type)))])
                                     [0 0]
                                     attributes-setups))
-        renderer (Renderer. renderer-id shader-program VBO VAO EBO (count vertex-positions-indices))]
+        renderer (Renderer. renderer-id shader-program VBO VAO EBO (count (:data vertex-positions-indices)))]
     (swap! renderers-by-id assoc renderer-id renderer)
     renderer))

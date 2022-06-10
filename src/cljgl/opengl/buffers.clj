@@ -17,24 +17,16 @@
 
 (defn bind-buffer [vertex-buffer-object buffer-type] (GL33/glBindBuffer buffer-type vertex-buffer-object))
 
-(defn unbind-buffer [buffer-type]
-  (bind-buffer 0 (case buffer-type
-                   :vertex-buffer ARRAY-BUFFER
-                   (:element-buffer :index-buffer) ELEMENT-ARRAY-BUFFER)))
-
-(defn buffer-data [^Integer target-buffer ^"[F" data ^Integer draw-type]
-  (GL33/glBufferData target-buffer data draw-type))
+(defn unbind-array-buffer [] (bind-buffer 0 ARRAY-BUFFER))
+(defn unbind-element-array-buffer [] (bind-buffer 0 ELEMENT-ARRAY-BUFFER))
 
 (defn vbo-data
   ([^"[F" data] (GL33/glBufferData ARRAY-BUFFER data STATIC-DRAW))
-  ([^"[F" data ^Integer usage]
-   (println "vbo debug:" data usage GL33/GL_STATIC_DRAW)
-   (GL33/glBufferData ARRAY-BUFFER data usage)))
+  ([^"[F" data ^Integer usage] (GL33/glBufferData ARRAY-BUFFER data usage)))
 
 (defn ebo-data
   ([^"[I" data] (GL33/glBufferData ELEMENT-ARRAY-BUFFER data STATIC-DRAW))
-  ([^"[I" data ^Integer usage]
-   (GL33/glBufferData ELEMENT-ARRAY-BUFFER data usage)))
+  ([^"[I" data ^Integer usage] (GL33/glBufferData ELEMENT-ARRAY-BUFFER data usage)))
 
 (defprotocol IBuffer
   (bind [this]))
@@ -64,7 +56,7 @@
   (bind [this]
     (when-not (= ebo-id @current-ebo)
       (reset! current-ebo ebo-id)
-      (bind-buffer ebo-id ELEMENT-ARRAY-BUFFER)))
+      (GL33/glBindBuffer ELEMENT-ARRAY-BUFFER ebo-id)))
   IDisposable
   (disposer/dispose [this]
     (GL33/glDeleteBuffers ^Integer ebo-id)))
