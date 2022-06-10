@@ -5,7 +5,10 @@
 
 (defonce ^Integer ARRAY-BUFFER GL33/GL_ARRAY_BUFFER)
 (defonce ^Integer ELEMENT-ARRAY-BUFFER GL33/GL_ELEMENT_ARRAY_BUFFER)
+
 (defonce ^Integer STATIC-DRAW GL33/GL_STATIC_DRAW)
+(defonce ^Integer DYNAMIC-DRAW GL33/GL_DYNAMIC_DRAW)
+(defonce ^Integer STREAM-DRAW GL33/GL_STREAM_DRAW)
 
 (defonce current-vbo (atom -1))
 (defonce current-vao (atom -1))
@@ -24,11 +27,14 @@
 
 (defn vbo-data
   ([^"[F" data] (GL33/glBufferData ARRAY-BUFFER data STATIC-DRAW))
-  ([^"[F" data ^Integer usage] (GL33/glBufferData ARRAY-BUFFER data usage)))
+  ([^"[F" data ^Integer usage]
+   (println "vbo debug:" data usage GL33/GL_STATIC_DRAW)
+   (GL33/glBufferData ARRAY-BUFFER data usage)))
 
 (defn ebo-data
   ([^"[I" data] (GL33/glBufferData ELEMENT-ARRAY-BUFFER data STATIC-DRAW))
-  ([^"[F" data ^Integer usage] (GL33/glBufferData ELEMENT-ARRAY-BUFFER data usage)))
+  ([^"[I" data ^Integer usage]
+   (GL33/glBufferData ELEMENT-ARRAY-BUFFER data usage)))
 
 (defprotocol IBuffer
   (bind [this]))

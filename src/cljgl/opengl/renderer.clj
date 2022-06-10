@@ -63,9 +63,14 @@
                           {:components 1           ;; layout (location = 1) in float;
                            :data-type  gl/FLOAT
                            :normalize? false}]})"
-  [{:keys [shaders-source-path vertex-positions vertex-positions-indices
-           attributes-setups shader-program-lookup-name renderer-id] :or {renderer-id (name (gensym "renderer_"))}}]
+  [{:keys [shaders-source-path
+           #_?arrayFloat vertex-positions
+           #_?arrayInt vertex-positions-indices
+           attributes-setups
+           shader-program-lookup-name
+           renderer-id] :or {renderer-id (name (gensym "renderer_"))}}]
   (let [shader-program (shaders/make-shader-program shader-program-lookup-name shaders-source-path)
+        _ (println (meta vertex-positions) (meta vertex-positions-indices))
         VAO (doto (buffers/gen-vao) buffers/bind)
         VBO (doto (buffers/gen-vbo) buffers/bind)
         EBO (doto (buffers/gen-ebo) buffers/bind)
@@ -76,8 +81,8 @@
         _ (debug/assert-all (buffers/bind VAO)
                             (buffers/bind VBO)
                             (buffers/bind EBO)
-                            (buffers/vbo-data (float-array vertex-positions))
-                            (buffers/ebo-data (int-array vertex-positions-indices))
+                            (buffers/vbo-data (:data vertex-positions) (gl-util/gl-usage (:usage vertex-positions)))
+                            (buffers/ebo-data (:data vertex-positions-indices) (gl-util/gl-usage (:usage vertex-positions-indices)))
                             (reduce (fn [[i byte-offset] {:keys [components gl-type normalize?]}]
                                       (gl/setup-vertex-attribute i components (gl-util/gl-type gl-type)
                                                                  normalize? vertex-buffer-stride byte-offset)

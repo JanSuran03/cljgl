@@ -1,5 +1,6 @@
 (ns cljgl.common.gl-util
-  (:require [cljgl.opengl.gl :as gl])
+  (:require [cljgl.opengl.gl :as gl]
+            [cljgl.opengl.buffers :as buffers])
   (:import (org.lwjgl.system MemoryUtil)))
 
 (defonce ^Long null MemoryUtil/NULL)
@@ -23,8 +24,14 @@
     (:gl-byte gl/BYTE :gl-unsigned-byte gl/U-BYTE) 1))
 
 (defn gl-type [gl-type-kw]
-  ({:gl-float        gl/FLOAT
+  ({:gl-byte         gl/U-BYTE
+    :gl-float        gl/FLOAT
     :gl-int          gl/INT
-    :gl-unsigned-int gl/U-INT
-    :gl-byte         gl/U-BYTE}
+    :gl-unsigned-int gl/U-INT}
    gl-type-kw))
+
+(defn gl-usage [gl-usage-kw]
+  ({:dynamic-draw buffers/DYNAMIC-DRAW
+    :static-draw  buffers/STATIC-DRAW
+    :stream-draw  buffers/STREAM-DRAW}
+   gl-usage-kw))
