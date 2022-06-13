@@ -1,15 +1,21 @@
 (ns cljgl.opengl.textures
+  (:refer-clojure :exclude [get])
   (:require [cljgl.opengl.gl :as gl]
-            [cljgl.common.disposer :as disposer])
+            [cljgl.common.disposer :as disposer]
+            [cljgl.common.debug :as debug]
+            [me.raynes.fs :as fs])
   (:import (org.lwjgl.opengl GL33)
            (java.nio ByteBuffer)
            (org.lwjgl.stb STBImage)
-           (cljgl.common.disposer IDisposable)))
+           (cljgl.common.disposer IDisposable)
+           (java.io FileNotFoundException)))
+
+(alias 'core 'clojure.core)
 
 (defonce MAX-OPENGL-TEXTURE-SLOTS (inc (- GL33/GL_TEXTURE31 GL33/GL_TEXTURE0)))
 
 (defonce textures-by-lookup-id (atom {}))
-(defn get-texture-by-lookup-id [texture-lookup-id] (get @textures-by-lookup-id texture-lookup-id))
+(defn get [texture-lookup-id] (core/get @textures-by-lookup-id texture-lookup-id))
 (defonce textures-by-slot (object-array MAX-OPENGL-TEXTURE-SLOTS))
 
 (def ^:private ^Integer tex-2d GL33/GL_TEXTURE_2D)
@@ -20,41 +26,34 @@
 (defn- free-image-buffer [^ByteBuffer img-buffer] (STBImage/stbi_image_free img-buffer))
 
 (defprotocol ITexture
-  (^:private set-slot-of-a-texture [texture slot])
-  (get-texture-slot [texture])
-  (bind-texture-to-slot [texture slot]))
-
-(declare delete-texture)
-
-(deftype Texture [texture-id width height ^:unsynchronized-mutable texture-slot]
-  ITexture
-  (set-slot-of-a-texture [this new-slot] (set! texture-slot new-slot))
-  (get-texture-slot [this] texture-slot)
-  (bind-texture-to-slot [this slot]
-    (set-active-texture-slot slot)
-    (bind-texture texture-id)
-    (set! texture-slot slot))
-  IDisposable
-  (disposer/dispose [this]
-    (delete-texture this)))
-
-(defn- unbind-texture-from-slot [texture]
-  (unbind-texture)
-  (set-active-texture-slot (get-texture-slot texture))
-  (set-slot-of-a-texture texture -1))
-
-(defn- delete-texture [^Integer texture] (GL33/glDeleteTextures texture)
-  (unbind-texture-from-slot (get-texture-slot texture))
-  (swap! textures-by-lookup-id dissoc texture))
+  (^:private set-slot-of-a-texture [texture slot] "Sets the current slot for this texture.")
+  (get-texture-slot [texture] "Returns current mutable value of the texture slot of this texture.")
+  (bind-texture-to-slot [texture slot] "Binds this texture to a slot (and unbinds others from it if any are bound).")
+  (unbind-texture-from-current-slot [texture] "Unbinds a texture from its current slot."))
 
 (defn get-texture-by-slot [slot] (aget textures-by-slot slot))
 (defn set-texture-slot-array [slot texture] (aset textures-by-slot slot texture))
 
-(defn change-texture-at-slot [^Texture texture slot]
-  (when-let [old-texture-on-this-slot (get-texture-by-slot slot)]
-    (set-slot-of-a-texture old-texture-on-this-slot -1))
-  (set-texture-slot-array slot texture)
-  (set-slot-of-a-texture texture slot))
+(deftype Texture [^Integer texture-id width height texture-lookup-id ^:unsynchronized-mutable texture-slot]
+  ITexture
+  (set-slot-of-a-texture [this new-slot] (set! texture-slot new-slot))
+  (get-texture-slot [this] texture-slot)
+  (unbind-texture-from-current-slot [this]
+    (unbind-texture)
+    (when texture-slot (set-active-texture-slot texture-slot))
+    (set-slot-of-a-texture this -1))
+  (bind-texture-to-slot [this slot]
+    (when-let [old-texture-on-this-slot (get-texture-by-slot slot)]
+      (set-slot-of-a-texture old-texture-on-this-slot -1))
+    (set-active-texture-slot slot)
+    (bind-texture texture-id)
+    (set-texture-slot-array slot this)
+    (set-slot-of-a-texture this slot))
+  IDisposable
+  (disposer/dispose [this]
+    (GL33/glDeleteTextures ^Integer texture-id)
+    (unbind-texture-from-current-slot this)
+    (swap! textures-by-lookup-id dissoc texture-lookup-id)))
 
 (defn clear-texture-slot [slot]
   (when-let [texture (get-texture-by-slot slot)]
@@ -63,7 +62,7 @@
 
 (defn delete-textures []
   (doseq [texture (vals @textures-by-lookup-id)]
-    (delete-texture texture)))
+    (disposer/dispose texture)))
 
 (defn setup-needed-parameters []
   (doseq [[param val] [[GL33/GL_TEXTURE_MIN_FILTER GL33/GL_LINEAR]
@@ -80,13 +79,15 @@
     [img-buffer width height channels-in-file]))
 
 (defn texture [src-path texture-lookup-id & {:keys [texture-slot]}]
+  (when-not (fs/exists? src-path)
+    (throw (FileNotFoundException. (str "Texture path not found: " src-path))))
   (let [texture-id (doto (gen-texture) bind-texture)
         [^ByteBuffer img-buffer ^int width ^int height ^int channels-in-file] (load-texture src-path)
-        _ (do (setup-needed-parameters)
-              (GL33/glTexImage2D tex-2d, 0, GL33/GL_RGBA8, width, height, 0, GL33/GL_RGBA, gl/U-BYTE, img-buffer)
-              (unbind-texture)
-              (some-> img-buffer free-image-buffer))
-        texture (Texture. texture-id width height texture-slot)]
-    (swap! textures-by-lookup-id assoc texture-lookup-id texture)
-    (when texture (bind-texture-to-slot texture texture-slot)
-                  ())))
+        _ (debug/assert-all (setup-needed-parameters)
+                            (GL33/glTexImage2D tex-2d, 0, GL33/GL_RGBA8, width, height, 0, GL33/GL_RGBA, gl/U-BYTE, img-buffer)
+                            (unbind-texture)
+                            (some-> img-buffer free-image-buffer))
+        texture (Texture. texture-id width height texture-lookup-id texture-slot)]
+    (debug/assert-all (swap! textures-by-lookup-id assoc texture-lookup-id texture)
+                      (when texture-slot
+                        (bind-texture-to-slot texture texture-slot)))))

@@ -61,6 +61,7 @@
       compiled-shader
       (do (delete-shader compiled-shader)
           (gl-util/log (str "Vertex shader compilation failed! Source path: " debug-src-path))
+          (gl-util/log (str "Shader info log: " (or (not-empty (get-shader-info-log compiled-shader)) "<no info log>")))
           (throw (RuntimeException. (get-shader-info-log compiled-shader)))))))
 
 (defn- create-and-compile-fragment-shader [fragment-source debug-src-path]
@@ -69,6 +70,7 @@
       compiled-shader
       (do (delete-shader compiled-shader)
           (gl-util/log (str "Fragment shader compilation failed! Source path: " debug-src-path))
+          (gl-util/log (str "Shader info log: " (or (not-empty (get-shader-info-log compiled-shader)) "<no info log>")))
           (throw (RuntimeException. (get-shader-info-log compiled-shader)))))))
 ;; ------------------------------------------------------
 ;; shader program

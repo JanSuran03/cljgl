@@ -19,7 +19,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Leiningen: clojure-complete:0.2.5" level="project" />
+    <orderEntry type="library" name="Leiningen: me.raynes/fs:1.4.6" level="project" />
     <orderEntry type="library" name="Leiningen: nrepl:0.6.0" level="project" />
+    <orderEntry type="library" name="Leiningen: org.apache.commons/commons-compress:1.8" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.10.1" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.async:1.5.648" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.cache:1.0.225" level="project" />
@@ -136,5 +138,6 @@
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.3.1:natives-macos" level="project" />
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.3.1:natives-windows" level="project" />
     <orderEntry type="library" name="Leiningen: org.ow2.asm/asm:9.2" level="project" />
+    <orderEntry type="library" name="Leiningen: org.tukaani/xz:1.5" level="project" />
   </component>
 </module>
