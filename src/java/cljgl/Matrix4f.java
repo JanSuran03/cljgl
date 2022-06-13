@@ -26,6 +26,15 @@ public class Matrix4f {
         return ret;
     }
 
+    public static float[] scale(float scaleX, float scaleY, float scaleZ) {
+        return new float[]{
+                scaleX, 0, 0, 0,
+                0, scaleY, 0, 0,
+                0, 0, scaleZ, 0,
+                0, 0, 0, 1
+        };
+    }
+
     public static float[] multiply(float[] mat1, float[] mat2) {
         float[] ret = blank();
         for (int row = 0; row < SIZE; row++) {

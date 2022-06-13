@@ -2,7 +2,8 @@
   "All callbacks have to be in format e.g.
   (set-key-callback @window* (fn [window-arg key scancode action mode]
                                (println window-arg key scancode action mode))"
-  (:import (org.lwjgl.glfw GLFW GLFWFramebufferSizeCallback GLFWMouseButtonCallback GLFWKeyCallback GLFWScrollCallback GLFWCursorEnterCallback GLFWCursorPosCallback)))
+  (:import (org.lwjgl.glfw GLFW GLFWCursorEnterCallback GLFWCursorPosCallback GLFWFramebufferSizeCallback
+                           GLFWKeyCallback GLFWMouseButtonCallback GLFWScrollCallback)))
 
 (defmacro set-key-callback [window-ref [_fn [window-arg key scancode action mode] & body]]
   `(GLFW/glfwSetKeyCallback ~window-ref

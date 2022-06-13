@@ -68,5 +68,4 @@
   :dependencies ~all-dependencies
   :java-source-paths ["src/java"]
   :jvm-opts ^:replace ~(jvm-opts)
-  :main clj-game.core
   :repl-options {:init-ns cljgl.core})
