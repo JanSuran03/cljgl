@@ -1,7 +1,7 @@
 (ns cljgl.glfw.glfw
   (:require [cljgl.common.gl-util :refer [null]])
   (:import (org.lwjgl.glfw Callbacks GLFW GLFWErrorCallback GLFWFramebufferSizeCallback
-                           GLFWKeyCallback GLFWVidMode)
+                           GLFWKeyCallback GLFWVidMode GLFWMouseButtonCallback)
            (org.lwjgl.system MemoryStack)
            (java.nio IntBuffer)))
 ;; ------------------------------------------------------
@@ -23,24 +23,6 @@
 (defn unbind-error-callback [] (.free (GLFW/glfwSetErrorCallback nil)))
 (defn free-callbacks [window] (Callbacks/glfwFreeCallbacks window))
 (defn make-context-current [window] (GLFW/glfwMakeContextCurrent window))
-
-(defmacro set-key-callback
-  "Has to be in format
-  (set-key-callback (fn [window-arg key scancode action mode]
-                      (println window-arg key scancode action mode))"
-  [window-reference [_fn [window-arg key scancode action mode] & body]]
-  `(GLFW/glfwSetKeyCallback ~window-reference
-                            (proxy [GLFWKeyCallback] []
-                              (invoke [~window-arg ~key ~scancode ~action ~mode] ~@body))))
-
-(defmacro set-framebuffer-size-callback
-  "Has to be in format
-  (set-framebuffer-size-callback (fn [window-arg width height]
-                                   (println window-arg width height]))"
-  [window-reference [_fn [window-arg width height] & body]]
-  `(GLFW/glfwSetFramebufferSizeCallback ~window-reference
-                                        (proxy [GLFWFramebufferSizeCallback] []
-                                          (invoke [~window-arg ~width ~height] ~@body))))
 ;; ------------------------------------------------------
 ;; window and monitor stuff
 ;; ------------------------------------------------------
