@@ -17,12 +17,14 @@
                                             "\n***************************************")
                                        message))))
 
-(defn sizeof [gl-type-kw]
-  ({:gl-float         Float/SIZE
-    :gl-unsigned-int  Integer/SIZE
-    :gl-int           Integer/SIZE
-    :gl-byte          Byte/SIZE
-    :gl-unsigned-byte Byte/SIZE} gl-type-kw))
+(let [m (into {} (map (fn [[k v]] [k (/ v 8)])
+                      {:gl-float         Float/SIZE
+                       :gl-unsigned-int  Integer/SIZE
+                       :gl-int           Integer/SIZE
+                       :gl-byte          Byte/SIZE
+                       :gl-unsigned-byte Byte/SIZE}))]
+  (defn sizeof [gl-type-kw]
+    (m gl-type-kw)))
 
 (defn gl-type [gl-type-kw]
   ({:gl-byte         gl/U-BYTE
