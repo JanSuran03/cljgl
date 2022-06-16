@@ -145,6 +145,7 @@
                                                  attributes-setups)
         num-attrs (count attributes-setups)
         VAO (doto (buffers/gen-vao) buffers/bind)]
-    (make-renderer {:vertex-data          vertex-data :num-attrs num-attrs :order->id order->id :indices indices
+    (make-renderer usage-type
+                   {:vertex-data          vertex-data :num-attrs num-attrs :order->id order->id :indices indices
                     :vertex-buffer-stride vertex-buffer-stride :attributes-setups attributes-setups
                     :renderer-lookup-name renderer-lookup-name :shader-program shader-program :VAO VAO})))
