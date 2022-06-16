@@ -18,9 +18,12 @@
                                        message))))
 
 (defn sizeof [gl-type-kw]
+  ({:gl-float         Float/SIZE
+    :gl-unsigned-int  Integer/SIZE
+    :gl-int           Integer/SIZE
+    :gl-byte          Byte/SIZE
+    :gl-unsigned-byte Byte/SIZE} gl-type-kw)
   (case gl-type-kw
-    (:gl-float gl/FLOAT :gl-unsigned-int
-      gl/U-INT :gl-int gl/INT) 4
     (:gl-byte gl/BYTE :gl-unsigned-byte gl/U-BYTE) 1))
 
 (defn gl-type [gl-type-kw]
