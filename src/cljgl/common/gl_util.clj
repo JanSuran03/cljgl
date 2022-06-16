@@ -35,3 +35,6 @@
     :static-draw  buffers/STATIC-DRAW
     :stream-draw  buffers/STREAM-DRAW}
    gl-usage-kw))
+
+(defmacro identity-keyword-map [& syms]
+  `(hash-map ~@(interleave (map keyword syms) syms)))

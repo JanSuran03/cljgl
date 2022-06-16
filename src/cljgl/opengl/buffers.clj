@@ -63,6 +63,9 @@
       (reset! current-ebo ebo-id)
       (GL33/glBindBuffer ELEMENT-ARRAY-BUFFER ebo-id)))
   (unbind [this] (GL33/glBindBuffer ELEMENT-ARRAY-BUFFER 0))
+  (buffer-data [this data]
+    (bind this)
+    (GL33/glBufferData ELEMENT-ARRAY-BUFFER ^"[I" data STATIC-DRAW))
   IDisposable
   (disposer/dispose [this]
     (GL33/glDeleteBuffers ^Integer ebo-id)))
