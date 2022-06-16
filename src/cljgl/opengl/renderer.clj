@@ -11,7 +11,8 @@
            (org.lwjgl.opengl GL33)))
 
 (defprotocol IRenderer
-  (render [this] "Performs an OpenGL rendering."))
+  (render [this] "Performs an OpenGL rendering.")
+  (extend-ebo-size [this num-elements] "Makes OpenGL render that many more elements."))
 
 (defn draw-elements
   ([mode count] (draw-elements mode count gl/U-INT 0))
@@ -31,8 +32,8 @@
 
 (deftype Renderer [renderer-id
                    ^ShaderProgram shader-program
-                   ^Vao
-                   vbo vao
+                   vao
+                   vbo
                    ebo
                    ^:unsynchronized-mutable ebo-size]
   IRenderer
@@ -41,6 +42,7 @@
     (buffers/bind vao)
     (buffers/bind ebo)
     (draw-elements gl/triangles ebo-size))
+  (extend-ebo-size [this num-elements] (set! ebo-size (+ ebo-size num-elements)))
   IDisposable
   (disposer/dispose [this]
     (disposer/dispose shader-program)
@@ -72,7 +74,6 @@
                             (reduce (fn [[i byte-offset] {:keys [components gl-type normalize?]}]
                                       (gl/setup-vertex-attribute i components (gl-util/gl-type gl-type)
                                                                  normalize? vertex-buffer-stride byte-offset)
-
                                       (gl/enable-vertex-attrib-array i)
                                       [(inc i) (+ byte-offset (* components (gl-util/sizeof gl-type)))])
                                     [0 0]
@@ -82,23 +83,25 @@
     renderer))
 
 (defmethod make-renderer :dynamic-draw
-  [_ {:keys [vertex-buffer-stride attributes-setups renderer-lookup-name shader-program VAO]}]
+  [_ {:keys [vertex-buffer-stride attributes-setups renderer-lookup-name shader-program VAO
+             vbo-byte-size ebo-byte-size]}]
   (let [DYNAMIC-VBO (buffers/dynamic-vbo vertex-buffer-stride)
         DYNAMIC-EBO (buffers/dynamic-ebo)
-        _ (debug/assert (reduce (fn [[i byte-offset] {:keys [components gl-type normalize?]}]
-                                  (gl/setup-vertex-attribute i components (gl-util/gl-type gl-type)
-                                                             normalize? vertex-buffer-stride byte-offset)
-
-                                  (gl/enable-vertex-attrib-array i)
-                                  [(inc i) (+ byte-offset (* components (gl-util/sizeof gl-type)))])
-                                [0 0]
-                                attributes-setups))
+        _ (debug/assert-all (buffers/malloc DYNAMIC-VBO vbo-byte-size)
+                            (buffers/malloc DYNAMIC-EBO ebo-byte-size)
+                            (reduce (fn [[i byte-offset] {:keys [components gl-type normalize?]}]
+                                      (debug/assert (gl/setup-vertex-attribute i components (gl-util/gl-type gl-type)
+                                                                               normalize? vertex-buffer-stride byte-offset))
+                                      (debug/assert (gl/enable-vertex-attrib-array i))
+                                      [(inc i) (+ byte-offset (* components (gl-util/sizeof gl-type)))])
+                                    [0 0]
+                                    attributes-setups))
         renderer (Renderer. renderer-lookup-name shader-program VAO DYNAMIC-VBO DYNAMIC-EBO 0)]
     (swap! renderers-by-id assoc renderer-lookup-name renderer)
     renderer))
 
 (defn setup-renderer [{:keys [shaders-source-path usage-type vertex-buffer vertex-data indices
-                              shader-program-lookup-name renderer-lookup-name]
+                              shader-program-lookup-name renderer-lookup-name vbo-byte-size ebo-byte-size]
                        :or   {shader-program-lookup-name (keyword (gensym "shader-program__"))
                               renderer-lookup-name       (keyword (gensym "renderer__"))}}]
   (let [shader-program (shaders/make-shader-program shader-program-lookup-name shaders-source-path)
@@ -113,4 +116,5 @@
         VAO (doto (buffers/gen-vao) buffers/bind)]
     (make-renderer usage-type
                    (gl-util/identity-keyword-map attributes-setups indices num-attrs order->id renderer-lookup-name
-                                                 shader-program VAO vertex-buffer-stride vertex-data))))
+                                                 shader-program VAO vertex-buffer-stride vertex-data
+                                                 vbo-byte-size ebo-byte-size))))

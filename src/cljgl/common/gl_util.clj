@@ -1,6 +1,5 @@
 (ns cljgl.common.gl-util
-  (:require [cljgl.opengl.gl :as gl]
-            [cljgl.opengl.buffers :as buffers])
+  (:require [cljgl.opengl.gl :as gl])
   (:import (org.lwjgl.system MemoryUtil)))
 
 (defonce ^Long null MemoryUtil/NULL)
@@ -34,9 +33,9 @@
    gl-type-kw))
 
 (defn gl-usage [gl-usage-kw]
-  ({:dynamic-draw buffers/DYNAMIC-DRAW
-    :static-draw  buffers/STATIC-DRAW
-    :stream-draw  buffers/STREAM-DRAW}
+  ({:dynamic-draw gl/DYNAMIC-DRAW
+    :static-draw  gl/STATIC-DRAW
+    :stream-draw  gl/STREAM-DRAW}
    gl-usage-kw))
 
 (defmacro identity-keyword-map [& syms]

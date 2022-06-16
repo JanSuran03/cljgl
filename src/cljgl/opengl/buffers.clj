@@ -1,14 +1,12 @@
 (ns cljgl.opengl.buffers
-  (:require [cljgl.common.disposer :as disposer])
+  (:require [cljgl.common.disposer :as disposer]
+            [cljgl.common.gl-util :as gl-util]
+            [cljgl.opengl.gl :as gl])
   (:import (cljgl.common.disposer IDisposable)
            (org.lwjgl.opengl GL33)))
 
 (defonce ^Integer ARRAY-BUFFER GL33/GL_ARRAY_BUFFER)
 (defonce ^Integer ELEMENT-ARRAY-BUFFER GL33/GL_ELEMENT_ARRAY_BUFFER)
-
-(defonce ^Integer STATIC-DRAW GL33/GL_STATIC_DRAW)
-(defonce ^Integer DYNAMIC-DRAW GL33/GL_DYNAMIC_DRAW)
-(defonce ^Integer STREAM-DRAW GL33/GL_STREAM_DRAW)
 
 (defonce current-vbo (atom -1))
 (defonce current-vao (atom -1))
@@ -18,7 +16,8 @@
 (defprotocol IBuffer
   (bind [this])
   (unbind [this])
-  (buffer-data [this data]))
+  (buffer-data [this data] [this data byte-size])
+  (malloc [this byte-size]))
 
 (deftype StaticVbo [vbo-id]
   IBuffer
@@ -29,7 +28,7 @@
   (unbind [this] (GL33/glBindBuffer ARRAY-BUFFER 0))
   (buffer-data [this data]
     (bind this)
-    (GL33/glBufferData ARRAY-BUFFER ^"[F" data STATIC-DRAW))
+    (GL33/glBufferData ARRAY-BUFFER ^"[F" data gl/STATIC-DRAW))
   IDisposable
   (disposer/dispose [this]
     (GL33/glDeleteBuffers ^Integer vbo-id)))
@@ -41,6 +40,13 @@
       (reset! current-vbo vbo-id)
       (GL33/glBindBuffer ARRAY-BUFFER vbo-id)))
   (unbind [this] (GL33/glBindBuffer ARRAY-BUFFER 0))
+  (malloc [this byte-size]
+    (bind this)
+    (GL33/glBufferData ARRAY-BUFFER ^long byte-size gl/DYNAMIC-DRAW))
+  (buffer-data [this data byte-size]
+    (bind this)
+    (GL33/glBufferSubData ARRAY-BUFFER ^int offset ^floats data)
+    (set! offset (+ offset byte-size)))
   IDisposable
   (disposer/dispose [this]
     (GL33/glDeleteBuffers ^Integer vbo-id)))
@@ -65,7 +71,7 @@
   (unbind [this] (GL33/glBindBuffer ELEMENT-ARRAY-BUFFER 0))
   (buffer-data [this data]
     (bind this)
-    (GL33/glBufferData ELEMENT-ARRAY-BUFFER ^"[I" data STATIC-DRAW))
+    (GL33/glBufferData ELEMENT-ARRAY-BUFFER ^"[I" data gl/STATIC-DRAW))
   IDisposable
   (disposer/dispose [this]
     (GL33/glDeleteBuffers ^Integer ebo-id)))
@@ -77,6 +83,13 @@
       (reset! current-ebo ebo-id)
       (GL33/glBindBuffer ELEMENT-ARRAY-BUFFER ebo-id)))
   (unbind [this] (GL33/glBindBuffer ELEMENT-ARRAY-BUFFER 0))
+  (malloc [this byte-size]
+    (bind this)
+    (GL33/glBufferData ELEMENT-ARRAY-BUFFER ^int byte-size gl/DYNAMIC-DRAW))
+  (buffer-data [this data byte-size]
+    (bind this)
+    (GL33/glBufferSubData ELEMENT-ARRAY-BUFFER ^int offset ^ints data)
+    (set! offset (+ offset byte-size)))
   IDisposable
   (disposer/dispose [this]
     (GL33/glDeleteBuffers ^Integer ebo-id)))

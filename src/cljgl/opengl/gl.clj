@@ -32,6 +32,12 @@
 (defn clear-color [r g b a] (GL33/glClearColor r g b a))
 (defn clear-bits [& bits] (GL33/glClear (reduce bit-or bits)))
 ;; ------------------------------------------------------
+;; drawing
+;; ------------------------------------------------------
+(defonce ^Integer STATIC-DRAW GL33/GL_STATIC_DRAW)
+(defonce ^Integer DYNAMIC-DRAW GL33/GL_DYNAMIC_DRAW)
+(defonce ^Integer STREAM-DRAW GL33/GL_STREAM_DRAW)
+;; ------------------------------------------------------
 ;; vertex attributes
 ;; ------------------------------------------------------
 (defn setup-vertex-attribute
