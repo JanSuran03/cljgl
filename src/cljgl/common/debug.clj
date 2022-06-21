@@ -36,5 +36,5 @@
 (defmacro assert-all [& forms]
   `(do ~@(map #(list `assert %) forms)))
 
-(defn disable-assert! [] (clear-errors) (reset! __enable-assert?* false))
-(defn enable-assert! [] (clear-errors) (reset! __enable-assert?* true))
+(defn disable-assert! [] (reset! __enable-assert?* false))
+(defn enable-assert! [] (reset! __enable-assert?* true))

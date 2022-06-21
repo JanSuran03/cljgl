@@ -29,6 +29,7 @@
 (defn get-primary-monitor [] (GLFW/glfwGetPrimaryMonitor))
 (defn get-video-mode [] (GLFW/glfwGetVideoMode (get-primary-monitor)))
 (defn show-window [window] (GLFW/glfwShowWindow window))
+(defn hide-window [window] (GLFW/glfwHideWindow window))
 (defn destroy-window [window] (GLFW/glfwDestroyWindow window))
 (defn close-window ([window] (GLFW/glfwSetWindowShouldClose window true)))
 (defn should-window-close? [window] (GLFW/glfwWindowShouldClose window))
